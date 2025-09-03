@@ -22,12 +22,11 @@ jobs:
 
       - name: Build the app
         run: |
-          cd DiskUtility
           xcodebuild -scheme DiskUtility -configuration Release -derivedDataPath build
 
       - name: Create DMG file
         run: |
-          APP_PATH="DiskUtility/build/Build/Products/Release/DiskUtility.app"
+          APP_PATH="build/Build/Products/Release/DiskUtility.app"
           create-dmg "$APP_PATH" --overwrite --dmg-title "Disk Utility" --out "." --dmgpath "DiskUtility.dmg"
 
       - name: Upload DMG Artifact
