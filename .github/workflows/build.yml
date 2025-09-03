@@ -19,7 +19,9 @@ jobs:
 
       - name: Install create-dmg (andreyvit version)
         run: |
+          rm -f /usr/local/bin/create-dmg || true
           git clone https://github.com/andreyvit/create-dmg.git
+          chmod +x create-dmg/create-dmg
 
       - name: Build the app
         run: |
@@ -28,7 +30,7 @@ jobs:
       - name: Create DMG file
         run: |
           APP_PATH="build/Build/Products/Release/DiskUtility.app"
-          ./create-dmg/create-dmg \
+          bash create-dmg/create-dmg \
             --overwrite \
             --volname "Disk Utility" \
             DiskUtility.dmg \
