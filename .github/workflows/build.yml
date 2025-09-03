@@ -17,8 +17,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install create-dmg
-        run: brew install create-dmg
+      - name: Install create-dmg (andreyvit version)
+        run: |
+          git clone https://github.com/andreyvit/create-dmg.git
+          sudo cp create-dmg/create-dmg /usr/local/bin/
 
       - name: Build the app
         run: |
@@ -27,7 +29,11 @@ jobs:
       - name: Create DMG file
         run: |
           APP_PATH="build/Build/Products/Release/DiskUtility.app"
-          create-dmg --overwrite --dmg-title="Disk Utility" "$APP_PATH" .
+          create-dmg \
+            --overwrite \
+            --volname "Disk Utility" \
+            DiskUtility.dmg \
+            "$APP_PATH"
 
       - name: Upload DMG Artifact
         uses: actions/upload-artifact@v4
