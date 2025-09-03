@@ -1,5 +1,4 @@
 name: Build DMG for Disk Utility
-
 on:
   push:
     branches:
@@ -8,34 +7,42 @@ on:
     branches:
       - main
   workflow_dispatch:
-
 jobs:
   build-dmg:
     runs-on: macos-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Install create-dmg (andreyvit version)
         run: |
           rm -f /usr/local/bin/create-dmg || true
           git clone https://github.com/andreyvit/create-dmg.git
           chmod +x create-dmg/create-dmg
-
+      
       - name: Build the app
         run: |
           xcodebuild -scheme DiskUtility -configuration Release -derivedDataPath build
-
+      
       - name: Create DMG file
         run: |
           APP_PATH="build/Build/Products/Release/DiskUtility.app"
+          
+          # Remove existing DMG if it exists
+          rm -f DiskUtility.dmg
+          
+          # Create DMG without --overwrite flag
           bash create-dmg/create-dmg \
-            --overwrite \
             --volname "Disk Utility" \
+            --window-pos 200 120 \
+            --window-size 800 400 \
+            --icon-size 100 \
+            --icon "DiskUtility.app" 175 120 \
+            --hide-extension "DiskUtility.app" \
+            --app-drop-link 425 120 \
             DiskUtility.dmg \
             "$APP_PATH"
-
+      
       - name: Upload DMG Artifact
         uses: actions/upload-artifact@v4
         with:
